@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solarhub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+        
+        :root {
+            --gradient-1: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --gradient-2: linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b);
+            --gradient-3: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --gradient-4: linear-gradient(135deg, #1a2980, #26d0ce);
+            --gradient-5: linear-gradient(135deg, #4776E6, #8E54E9);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-1);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #a1c4fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .version {
+            font-size: 14px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+        
+        .menu {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .menu li {
+            margin: 20px 0;
+            transition: transform 0.3s;
+        }
+        
+        .menu li:hover {
+            transform: translateX(5px);
+        }
+        
+        .menu li a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 8px 15px;
+            border-radius: 50px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .burger-menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            z-index: 100;
+        }
+        
+        .burger-menu span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+        
+        .account-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .account-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .account-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 200px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 70px 20px 20px;
+            transition: all 0.4s ease;
+            z-index: 99;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar li {
+            margin: 25px 0;
+        }
+        
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar a:hover {
+            color: #a1c4fd;
+            transform: translateX(5px);
+        }
+        
+        .content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .content.active {
+            display: block;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 300px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .close-modal {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .form-group input:focus {
+            outline: 1px solid #a1c4fd;
+        }
+        
+        .form-submit {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(161, 196, 253, 0.3);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .form-submit:hover {
+            background: rgba(161, 196, 253, 0.5);
+        }
+        
+        .form-switch {
+            margin-top: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #a1c4fd;
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: left;
+            display: none;
+        }
+
+        .form-group.has-error input {
+            outline: 1px solid #ff6b6b;
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .profile-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .profile-name {
+            font-size: 14px;
+        }
+        
+        .logout-btn {
+            background: rgba(255, 0, 0, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 0, 0, 0.3);
+        }
+        
+        .settings-menu {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .settings-option {
+            margin-bottom: 15px;
+        }
+        
+        .settings-option label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .color-option.selected {
+            border-color: white;
+        }
+        
+        .color-option[data-color="1"] { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+        .color-option[data-color="2"] { background: linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b); }
+        .color-option[data-color="3"] { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+        .color-option[data-color="4"] { background: linear-gradient(135deg, #1a2980, #26d0ce); }
+        .color-option[data-color="5"] { background: linear-gradient(135deg, #4776E6, #8E54E9); }
+        
+        .news-menu {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Бургер-меню -->
+    <div class="burger-menu" id="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    
+    <!-- Кнопки аккаунта (скрываются после входа) -->
+    <div class="account-buttons" id="accountButtons">
+        <button class="account-btn" id="loginBtn">Вход</button>
+        <button class="account-btn" id="registerBtn">Регистрация</button>
+    </div>
+    
+    <!-- Информация профиля (показывается после входа) -->
+    <div class="profile-info" id="profileInfo" style="display: none;">
+        <span class="profile-name" id="profileName"></span>
+        <button class="logout-btn" id="logoutBtn">Выйти</button>
+    </div>
+    
+    <!-- Боковое меню -->
+    <div class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="#" data-content="download"><i class="fas fa-download"></i> Скачать</a></li>
+            <li><a href="#" data-content="info"><i class="fas fa-info-circle"></i> Инфо</a></li>
+            <li><a href="#" data-content="about"><i class="fas fa-users"></i> Мы</a></li>
+        </ul>
+    </div>
+    
+    <!-- Основной контент -->
+    <div class="container">
+        <h1>Solarhub</h1>
+        <div class="version">solarhub v 1.0</div>
+        
+        <!-- Раздел "Скачать" (активен по умолчанию) -->
+        <div class="content active" id="download">
+            <h3>Доступные версии:</h3>
+            <ul class="menu" id="downloadMenu">
+                <li><a href="#" class="download-link"><i class="fab fa-windows"></i> Windows</a></li>
+                <li><a href="#" class="download-link"><i class="fab fa-apple"></i> macOS</a></li>
+                <li><a href="#" class="download-link"><i class="fab fa-linux"></i> Linux</a></li>
+            </ul>
+        </div>
+        
+        <!-- Раздел "Инфо" -->
+        <div class="content" id="info">
+            <h3>О проекте:</h3>
+            <p>Solarhub — это инновационная платформа для управления солнечными панелями.</p>
+            <ul class="menu">
+                <li><a href="#" id="newsBtn"><i class="fas fa-newspaper"></i> Новости</a></li>
+                <li><a href="#" id="settingsBtn"><i class="fas fa-cog"></i> Настройки</a></li>
+            </ul>
+            
+            <!-- Меню новостей -->
+            <div class="news-menu" id="newsMenu">
+                <p>Новостей еще нет</p>
+            </div>
+            
+            <!-- Меню настроек -->
+            <div class="settings-menu" id="settingsMenu">
+                <div class="settings-option">
+                    <label>
+                        <input type="checkbox" id="particlesToggle" checked> Снежинки
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <p>Цвет фона:</p>
+                    <div class="color-options">
+                        <div class="color-option selected" data-color="1"></div>
+                        <div class="color-option" data-color="2"></div>
+                        <div class="color-option" data-color="3"></div>
+                        <div class="color-option" data-color="4"></div>
+                        <div class="color-option" data-color="5"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Раздел "Мы" -->
+        <div class="content" id="about">
+            <h3>Наша команда:</h3>
+            <p>Разработчики, дизайнеры и энтузиасты чистых технологий!</p>
+            <ul class="menu">
+                <li><a href="https://github.com/SolarClub-hub" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                <li><a href="https://t.me/guienapig" target="_blank"><i class="fab fa-telegram"></i> Telegram</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для авторизации -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Вход</h3>
+            <form id="authForm">
+                <div class="form-group" id="usernameGroup">
+                    <label for="username">Никнейм:</label>
+                    <input type="text" id="username" required>
+                    <div class="error-message" id="usernameError"></div>
+                </div>
+                <div class="form-group" id="passwordGroup">
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" required>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+                <button type="submit" class="form-submit" id="formSubmit">Войти</button>
+                <div class="form-switch" id="formSwitch">Нет аккаунта? Зарегистрируйтесь</div>
+            </form>
+            <button class="close-modal" id="closeModal">Закрыть</button>
+        </div>
+    </div>
+    
+    <!-- Фон с частицами -->
+    <canvas class="particles" id="particles"></canvas>
+    
+    <script>
+        // Состояние авторизации
+        let isLoginMode = true;
+        let currentUser = null;
+        
+        // Элементы интерфейса
+        const authModal = document.getElementById('authModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const authForm = document.getElementById('authForm');
+        const formSubmit = document.getElementById('formSubmit');
+        const formSwitch = document.getElementById('formSwitch');
+        const closeModal = document.getElementById('closeModal');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const accountButtons = document.getElementById('accountButtons');
+        const profileInfo = document.getElementById('profileInfo');
+        const profileName = document.getElementById('profileName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const downloadLinks = document.querySelectorAll('.download-link');
+        const newsBtn = document.getElementById('newsBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const newsMenu = document.getElementById('newsMenu');
+        const settingsMenu = document.getElementById('settingsMenu');
+        const particlesToggle = document.getElementById('particlesToggle');
+        const colorOptions = document.querySelectorAll('.color-option');
+        
+        // Проверяем, есть ли сохранённый пользователь
+        function checkAuth() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                currentUser = JSON.parse(user);
+                updateUI();
+            }
+        }
+        
+        // Обновляем интерфейс в зависимости от авторизации
+        function updateUI() {
+            if (currentUser) {
+                accountButtons.style.display = 'none';
+                profileInfo.style.display = 'flex';
+                profileName.textContent = currentUser.username;
+                
+                // Разблокируем скачивание
+                downloadLinks.forEach(link => {
+                    link.onclick = (e) => {
+                        e.preventDefault();
+                        alert(`Файл скачивается для пользователя ${currentUser.username}!`);
+                        // Здесь можно добавить реальное скачивание
+                    };
+                });
+            } else {
+                accountButtons.style.display = 'flex';
+                profileInfo.style.display = 'none';
+                
+                // Блокируем скачивание
+                downloadLinks.forEach(link => {
+                    link.onclick = (e) => {
+                        e.preventDefault();
+                        authModal.style.display = 'flex';
+                    };
+                });
+            }
+        }
+        
+        // Показываем ошибку под полем
+        function showError(fieldId, message) {
+            const group = document.getElementById(`${fieldId}Group`);
+            const errorElement = document.getElementById(`${fieldId}Error`);
+            
+            group.classList.add('has-error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        // Скрываем ошибку
+        function hideError(fieldId) {
+            const group = document.getElementById(`${fieldId}Group`);
+            const errorElement = document.getElementById(`${fieldId}Error`);
+            
+            group.classList.remove('has-error');
+            errorElement.style.display = 'none';
+        }
+
+        // Регистрация
+        function register(username, password) {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            if (users.some(user => user.username === username)) {
+                showError('username', 'Этот никнейм уже занят!');
+                return false;
+            }
+            
+            if (username.length < 3) {
+                showError('username', 'Никнейм слишком короткий (мин. 3 символа)');
+                return false;
+            }
+            
+            if (password.length < 4) {
+                showError('password', 'Пароль слишком короткий (мин. 4 символа)');
+                return false;
+            }
+            
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            return true;
+        }
+
+        // Вход
+        function login(username, password) {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(user => user.username === username && user.password === password);
+            
+            if (!user) {
+                showError('username', 'Неверный никнейм или пароль');
+                showError('password', 'Неверный никнейм или пароль');
+                return false;
+            }
+            
+            currentUser = { username };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            return true;
+        }
+
+        // Выход
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            updateUI();
+        }
+
+        // Переключение между входом и регистрацией
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            
+            // Сбрасываем ошибки при переключении
+            hideError('username');
+            hideError('password');
+            
+            if (isLoginMode) {
+                modalTitle.textContent = 'Вход';
+                formSubmit.textContent = 'Войти';
+                formSwitch.textContent = 'Нет аккаунта? Зарегистрируйтесь';
+            } else {
+                modalTitle.textContent = 'Регистрация';
+                formSubmit.textContent = 'Зарегистрироваться';
+                formSwitch.textContent = 'Уже есть аккаунт? Войти';
+            }
+        }
+
+        // Обработчики событий
+        loginBtn.addEventListener('click', () => {
+            isLoginMode = true;
+            toggleAuthMode();
+            authModal.style.display = 'flex';
+        });
+        
+        registerBtn.addEventListener('click', () => {
+            isLoginMode = false;
+            toggleAuthMode();
+            authModal.style.display = 'flex';
+        });
+        
+        formSwitch.addEventListener('click', toggleAuthMode);
+        
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Сбрасываем ошибки
+            hideError('username');
+            hideError('password');
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (isLoginMode) {
+                if (login(username, password)) {
+                    authModal.style.display = 'none';
+                    updateUI();
+                }
+            } else {
+                if (register(username, password)) {
+                    // После успешной регистрации переключаем на вход
+                    isLoginMode = true;
+                    toggleAuthMode();
+                    showError('username', 'Регистрация успешна! Войдите в аккаунт.');
+                }
+            }
+        });
+        
+        closeModal.addEventListener('click', () => {
+            authModal.style.display = 'none';
+        });
+        
+        logoutBtn.addEventListener('click', logout);
+        
+        // Бургер-меню
+        const burgerMenu = document.getElementById('burgerMenu');
+        const sidebar = document.getElementById('sidebar');
+        
+        burgerMenu.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            burgerMenu.classList.toggle('active');
+        });
+        
+        // Переключение контента
+        const sidebarLinks = document.querySelectorAll('.sidebar a');
+        const contents = document.querySelectorAll('.content');
+        
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const contentId = link.getAttribute('data-content');
+                
+                contents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                document.getElementById(contentId).classList.add('active');
+                sidebar.classList.remove('active');
+            });
+        });
+        
+        // Частицы
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const particles = [];
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 3 + 1,
+                speedX: (Math.random() - 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.5,
+                color: `rgba(255, 255, 255, ${Math.random() * 0.5})`
+            });
+        }
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let particle of particles) {
+                ctx.fillStyle = particle.color;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+                
+                if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+                if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+            }
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        animateParticles();
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Новый функционал для настроек и новостей
+        newsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            newsMenu.style.display = newsMenu.style.display === 'block' ? 'none' : 'block';
+            settingsMenu.style.display = 'none';
+        });
+        
+        settingsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+            newsMenu.style.display = 'none';
+        });
+        
+        particlesToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                animateParticles();
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            localStorage.setItem('particlesEnabled', e.target.checked);
+        });
+        
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                colorOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                
+                const colorNum = option.getAttribute('data-color');
+                document.body.style.background = `var(--gradient-${colorNum})`;
+                localStorage.setItem('selectedBackground', colorNum);
+            });
+        });
+        
+        // Загружаем сохранённые настройки при загрузке страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedBg = localStorage.getItem('selectedBackground');
+            if (savedBg) {
+                document.body.style.background = `var(--gradient-${savedBg})`;
+                document.querySelector(`.color-option[data-color="${savedBg}"]`).classList.add('selected');
+                document.querySelectorAll(`.color-option:not([data-color="${savedBg}"])`).forEach(el => {
+                    el.classList.remove('selected');
+                });
+            }
+            
+            const particlesEnabled = localStorage.getItem('particlesEnabled') !== 'false';
+            particlesToggle.checked = particlesEnabled;
+            if (!particlesEnabled) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        });
+        
+        // Проверяем авторизацию при загрузке
+        checkAuth();
+        updateUI();
+    </script>
+</body>
+</html>
